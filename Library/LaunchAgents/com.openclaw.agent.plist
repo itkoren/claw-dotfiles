@@ -6,7 +6,7 @@
 <string>com.openclaw.agent</string>
 <key>ProgramArguments</key>
 <array>
-<string>/Users/satya/openclaw/launch.sh</string>
+<string>/Users/satya/content/openclaw/launch.sh</string>
 </array>
 <key>RunAtLoad</key>
 <true/>
