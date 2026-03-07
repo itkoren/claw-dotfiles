@@ -1,0 +1,38 @@
+# ╭──────────────────────────────────────────────────────────╮
+# │ PACKAGES                                                 │
+# ╰──────────────────────────────────────────────────────────╯
+
+---
+packages:
+  taps:
+      - "DomT4/autoupdate"
+  brews:
+      - "powerlevel10k"
+      - "thefuck"
+      - "antigen"
+      - "autojump"
+      - "atuin"
+      - "eza"
+      - "gh"
+      - "jq"
+      - "mas"
+      - "fzf"
+      - "zoxide"
+      - "tldr"
+      - "asdf"
+      - "peco"
+      - "stern"
+      - "pinentry-mac"
+  casks:
+      - "iterm2"
+      - "docker"
+      - "font-meslo-lg-nerd-font"
+      - "obsidian"
+  asdf:
+      - plugin: "nodejs"
+        versions:
+            - "latest"
+      - plugin: "python"
+        versions:
+            - "latest"
+            
