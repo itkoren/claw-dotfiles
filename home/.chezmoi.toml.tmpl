@@ -1,9 +1,5 @@
-{{ $tasks := false }}
-{{ $externs := false }}
 {{ $name = promptStringOnce . "name" "Name" "Satya Claw" }}
 {{ $email = promptStringOnce . "email" "Email Address" "ikoc.satya@gmail.com" }}
-{{ $brewcasks = promptBoolOnce . "brewcasks" "Install brew casks" true }}
-{{ $chassisType = "mini" }}
 
 # ╭──────────────────────────────────────────────────────────╮
 # │ CHEZMOI CONFIG                                           │
@@ -12,24 +8,15 @@
 follow = true # follow symlinks
 sourceDir = {{ .chezmoi.workingTree | quote }}
 progress = true
-encryption = "age"
-
-[age]
-  identity = {{ $age_identity | quote }}
-  recipient = {{ $age_recipient | quote }}
 
 [data]
   name = {{ $name | quote }}
   email = {{ $email | quote }}
   editor = "nvim"
-  externs = {{ $externs }}
-  brewcasks = {{ $brewcasks }}
   
-{{ if $tasks  }}
 [hooks.init.pre]
   command = "task"
   args = ["-d", {{- .chezmoi.sourceDir | quote -}}]
-{{ end }}
 
 [hooks.read-source-state.pre]
   command = "{{- .chezmoi.workingTree -}}/.darwin-install-prerequisites.sh"
