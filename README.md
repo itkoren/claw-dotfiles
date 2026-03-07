@@ -3,10 +3,10 @@
 
 ## 🗿 Overview
 
-This [dotfiles](https://github.com/itkoren/dotfiles) repository is managed with [`chezmoi🏠`](https://www.chezmoi.io/), a great dotfiles manager.
+This [claw-dotfiles](https://github.com/itkoren/claw-dotfiles) repository is managed with [`chezmoi🏠`](https://www.chezmoi.io/), a great dotfiles manager.
 The setup scripts are aimed for [MacOS](https://www.apple.com/jp/macos), [Ubuntu Desktop](https://ubuntu.com/desktop), and [Ubuntu Server](https://ubuntu.com/server). The first two (MacOS/Ubuntu Desktop) include settings for `client` machines and the latter one (Ubuntu Server) for `server` machines. 
 
-The actual dotfiles exist under the [`home`](https://github.com/itkoren/dotfiles/tree/master/home) directory specified in the [`.chezmoiroot`](https://github.com/itkoren/dotfiles/blob/master/.chezmoiroot).
+The actual dotfiles exist under the [`home`](https://github.com/itkoren/claw-dotfiles/tree/master/home) directory specified in the [`.chezmoiroot`](https://github.com/itkoren/claw-dotfiles/blob/master/.chezmoiroot).
 See [.chezmoiroot - chezmoi](https://www.chezmoi.io/reference/special-files-and-directories/chezmoiroot/) more detail on the setting.
 
 ## 📥 Setup
@@ -18,14 +18,14 @@ To set up the dotfiles run the appropriate snippet in the terminal.
 - Configuration snippet of the Apple Silicon MacOS environment for client macnine:
 
 ```console
-bash -c "$(curl -fsLS https://raw.githubusercontent.com/itkoren/dotfiles/main/setup.sh)"
+bash -c "$(curl -fsLS https://raw.githubusercontent.com/itkoren/claw-dotfiles/main/setup.sh)"
 ```
 
 ### 🖥️ `Ubuntu`
 - Configuration snippet of the Ubuntu environment for both client and server machine:
 
 ```console
-bash -c "$(wget -qO - https://raw.githubusercontent.com/itkoren/dotfiles/main/setup.sh)"
+bash -c "$(wget -qO - https://raw.githubusercontent.com/itkoren/claw-dotfiles/main/setup.sh)"
 ```
 
 ### Minimal setup
@@ -43,7 +43,7 @@ The desired application can be installed as follows (e.g., docker installation o
 bash install/macos/common/docker.sh
 ```
 
-Each installation script can be found under the [`./install`](https://raw.githubusercontent/itkoren/dotfiles/main/install) directory.
+Each installation script can be found under the [`./install`](https://raw.githubusercontent/itkoren/claw-dotfiles/main/install) directory.
 
 ## 🛠️ Update & Test 🧪
 
@@ -52,12 +52,12 @@ To verify that the updated scripts work correctly, run the scripts on the actual
 
 ### 💡 Develop the Setup Scripts
 
-The setup scripts are stored as shellscripts in an appropriate location under the [`./install`](https://raw.githubusercontent/itkoren/dotfiles/main/install) directory.
-After verifying that the shellscript works, store the [chezmoi template](https://www.chezmoi.io/user-guide/templating/)-based file, which is based on the shellscript, in an appropriate location under the [`./home/.chezmoiscripts`](https://raw.githubusercontent/itkoren/dotfiles/main/home/.chezmoiscripts) directory.
+The setup scripts are stored as shellscripts in an appropriate location under the [`./install`](https://raw.githubusercontent/itkoren/claw-dotfiles/main/install) directory.
+After verifying that the shellscript works, store the [chezmoi template](https://www.chezmoi.io/user-guide/templating/)-based file, which is based on the shellscript, in an appropriate location under the [`./home/.chezmoiscripts`](https://raw.githubusercontent/itkoren/claw-dotfiles/main/home/.chezmoiscripts) directory.
 
 Below is the correspondence between shellscript and template for docker installation on MacOS.
-- The shellscript for docker: [`install/macos/common/docker.sh`](https://raw.githubusercontent/itkoren/dotfiles/main/install/macos/common/docker.sh)
-- The chezmoi template for docker: [`home/.chezmoiscripts/macos/run_once_10-install-docker.sh.tmpl`](https://raw.githubusercontent/itkoren/dotfiles/main/home/.chezmoiscripts/macos/run_once_10-install-docker.sh.tmpl)
+- The shellscript for docker: [`install/macos/common/docker.sh`](https://raw.githubusercontent/itkoren/claw-dotfiles/main/install/macos/common/docker.sh)
+- The chezmoi template for docker: [`home/.chezmoiscripts/macos/run_once_10-install-docker.sh.tmpl`](https://raw.githubusercontent/itkoren/claw-dotfiles/main/home/.chezmoiscripts/macos/run_once_10-install-docker.sh.tmpl)
 
 ### 💾 Test on the Local Machine
 
@@ -89,10 +89,10 @@ Run the [`chezmoi init --apply`](https://www.chezmoi.io/user-guide/setup/#use-a-
 itkoren@5f93d270cb51:~$ chezmoi init --apply
 ```
 
-### 🦇 Unit Test with [Bats](https://github.com/bats-core/bats-core) [![Unit test](https://raw.githubusercontent/itkoren/dotfiles/main/actions/workflows/test.yaml/badge.svg)](https://raw.githubusercontent/itkoren/dotfiles/main/actions/workflows/test.yaml)
+### 🦇 Unit Test with [Bats](https://github.com/bats-core/bats-core) [![Unit test](https://raw.githubusercontent/itkoren/claw-dotfiles/main/actions/workflows/test.yaml/badge.svg)](https://raw.githubusercontent/itkoren/claw-dotfiles/main/actions/workflows/test.yaml)
 
 Test the shellscript for setup with [Bash Automated Testing System (bats)](https://github.com/bats-core/bats-core).
-The scripts for the unit test can be found under [`./tests`](https://raw.githubusercontent/itkoren/dotfiles/main/tests/install) directory.
+The scripts for the unit test can be found under [`./tests`](https://raw.githubusercontent/itkoren/claw-dotfiles/main/tests/install) directory.
 
 ## 👏 Acknowledgements
 
@@ -105,7 +105,7 @@ Inspiration and code was taken from many sources, including:
 
 ## 📝 License
 
-The code is available under the [MIT license](https://raw.githubusercontent/itkoren/dotfiles/main/LICENSE).
+The code is available under the [MIT license](https://raw.githubusercontent/itkoren/claw-dotfiles/main/LICENSE).
 
 ## Last manual steps
 - Set default spotlight search to cmd+shit+space and Raycast to cmd+space
