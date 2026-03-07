@@ -1,0 +1,116 @@
+; ╭──────────────────────────────────────────────────────────╮
+; │ GIT CONFIG                                               │
+; ╰──────────────────────────────────────────────────────────╯
+
+[user]
+  name = "{{- .name -}}"
+  email = "{{- .email -}}"
+  {{- if .key_sign }}
+  signingkey = {{ .key_sign }}
+  {{- else if .opsecret }}
+  signingkey = {{ .opsecret }}
+  {{- end }}
+
+{{- if (or (.key_sign) (.opsecret)) }}
+[gpg]
+  format = ssh
+
+{{- if .opsecret }}
+{{- if eq .chezmoi.os "darwin" }}
+[gpg "ssh"]
+  program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+{{- end }}
+{{- end }}
+
+{{- if eq .chezmoi.os "darwin" }}
+[credential]
+  helper = osxkeychain
+{{- else }}
+[credential]
+  helper = /usr/lib/git-core/git-credential-libsecret
+{{- end }}
+{{- end }}
+
+[core]
+  editor = "{{ .editor }}"
+  longpaths = true
+  pager = "delta"
+  excludesFile = ~/.gitignore_global
+  {{- if eq .chezmoi.os "windows" }}
+  autocrlf = true
+  sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+  {{- else }}
+  autocrlf = input
+  {{- end }}
+
+[init]
+  defaultBranch = "master"
+  templatedir = ~/.gittemplates
+
+[commit]
+  {{- if (or (.key_sign) (.opsecret)) }}
+  gpgsign = true
+  {{- end }} 
+
+[push]
+  default = upstream
+  autoSetupRemote = true
+
+[pull]
+  ff = only
+
+[stash]
+  showPatch = true
+
+[log]
+  decorate = full
+
+[status]
+  showUntrackedFiles = all
+
+[merge]
+  conflictstyle = diff3
+  stat = true
+
+[advice]
+  pushNonFastForward = false
+  statusHints = false
+
+[gitreview]
+  remote = "origin"
+
+[remote "origin"]
+  fetch = +refs/pull/*/head:refs/remotes/origin/pr/*
+
+[color]
+  ui = "auto"
+  status = "auto"
+  diff = "auto"
+  branch = "auto"
+  interactive = "auto"
+
+[pager]
+  diff = delta
+  log = delta
+  reflog = delta
+  show = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  features = side-by-side line-numbers decorations
+  whitespace-error-style = 22 reverse
+
+[delta "decorations"]
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+
+[help]
+  autocorrect = 1
+
+{{- if eq .name "satya-claw" "Satya Claw" "Claw Satya" "Satya" }}
+[url "git@github.com:satya-claw"]
+  insteadOf = https://github.com/satya-claw
+{{- end }}
