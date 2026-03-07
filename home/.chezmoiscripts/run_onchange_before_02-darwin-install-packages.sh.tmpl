@@ -1,0 +1,87 @@
+#!{{ lookPath "sh" }}
+
+# packages.yaml hash: {{ include ".chezmoidata/packages.yaml" | sha256sum }}
+
+read -p "Going to install packages! skip? (y/n): " yn
+if [[ "$yn" =~ ^[Yy]$ ]]; then
+  echo "Skipping..."
+else
+  # First check missing and outdated casks
+  brewfile_cask_content=$(cat <<EOF
+  {{ range .packages.casks -}}
+  cask {{ . | quote }}
+  {{ end -}}
+  EOF
+  )
+  
+  # Generate the tap & formulas Brewfile content dynamically and store it in a variable
+  brewfile_content=$(cat <<EOF
+  {{ range .packages.taps -}}
+  tap {{ . | quote }}
+  {{ end -}}
+  
+  {{ range .packages.brews -}}
+  brew {{ . | quote }}
+  {{ end -}}
+  EOF
+  )
+  
+  # Step 1: Check if all packages are already installed using `brew bundle check`
+  echo "$brewfile_content" | brew bundle check --file=/dev/stdin
+  
+  # Step 2: If some packages are missing, install them
+  if [[ $? -ne 0 ]]; then
+      echo "$brewfile_content" | brew bundle --file=/dev/stdin
+  fi
+  
+  # If there are missing or outdated casks, generate a Brewfile for only those casks
+  if [[ -n "$brewfile_cask_content" ]]; then
+  
+      # Iterate over each cask in the list
+      while IFS= read -r cask; do
+        # Remove the "cask" prefix and the quotes to get the cask name
+        cask_name=$(echo "$cask" | sed -E 's/cask "(.*)"/\1/')
+        
+        # Check if the cask is installed and outdated
+        if ! brew list --cask "$cask_name" &>/dev/null || brew outdated --cask "$cask_name" | grep -q .; then
+          # If it's not installed or outdated, add it to the list of casks to install/update
+          casks_to_install_or_update+="$cask\n"
+        fi
+      done <<< "$brewfile_cask_content"
+      
+      # Now $casks_to_install_or_update contains all casks that need installation or updating
+      echo "Casks to install or update: $casks_to_install_or_update"
+  
+      # Step 1: Check if the casks are already installed using `brew bundle check`
+      echo "$casks_to_install_or_update" | brew bundle check --file=/dev/stdin
+  
+      # Step 2: If some casks are missing or outdated, install them
+      if [[ $? -ne 0 ]]; then
+          echo "$casks_to_install_or_update" | brew bundle --force --file=/dev/stdin
+      fi
+  else
+      echo "No missing or outdated casks to install."
+  fi
+  
+  # Install the Xcode specific app (id: 497799835) separately if needed
+  mas install "497799835"
+  
+  # Accept T&Cs if needed
+  if ! sudo xcodebuild -license check &>/dev/null; then
+    echo "Xcode license has not been accepted."
+    echo "Accepting the Xcode license..."
+  
+    # Automatically accept the license
+    sudo xcodebuild -license accept
+  
+    echo "Xcode license accepted."
+  fi
+  
+  {{ range .packages.asdf -}}
+  asdf plugin add {{ .plugin }}
+  {{ $plugin := .plugin }}  # Store the plugin name in a local variable
+  {{ range .versions }}
+  asdf install {{ $plugin }} {{ . }}  # Use the $plugin variable
+  {{ end }}
+  {{ end -}}
+fi
