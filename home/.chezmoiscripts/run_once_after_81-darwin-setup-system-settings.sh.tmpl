@@ -1,0 +1,26 @@
+#!{{ lookPath "sh" }}
+
+read -p "Would you like to schedule recurrent automatic brew updates? (y/n): " yn
+if [[ "$yn" =~ ^[Yy]$ ]]; then
+    # Prompt the user for input
+    read -p "Enter interval in hours: " hours
+
+    # Check if the input is a valid number (integer or decimal)
+    if ! [[ "$hours" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        echo "Error: input is an invalid number. To run manually just run the following in your terminal:\n"
+        echo "brew autoupdate start 86400 --upgrade --cleanup --immediate --sudo"
+        echo "Skipping..."
+    else
+        # Calculate seconds
+        # Multiply hours by 3600 and round to the nearest integer
+        seconds=$(awk "BEGIN { printf \"%d\", ($hours * 3600 + 0.5) }")
+    
+        # Output the result
+        echo "$hours hour(s) is equal to $seconds seconds."
+    
+        mkdir -p ~/Library/LaunchAgents
+        brew autoupdate start $seconds --upgrade --cleanup --immediate --sudo
+    fi
+else
+    echo "Skipping..."
+fi
