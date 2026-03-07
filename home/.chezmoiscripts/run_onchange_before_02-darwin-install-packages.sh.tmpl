@@ -62,9 +62,17 @@ else
   else
       echo "No missing or outdated casks to install."
   fi
-  
+
+  {{ $xcode_id := "497799835" -}}
+  {{ $exclude_universal_package := "" }}
+  {{ range .packages.darwin.universal.mas }}
+    {{ if eq .id $xcode_id }}
+      {{ $exclude_universal_package = . }}
+    {{ end }}
+  {{ end }}
+  {{ if $exclude_universal_package }}
   # Install the Xcode specific app (id: 497799835) separately if needed
-  mas install "497799835"
+  mas install {{ $exclude_universal_package.id }}
   
   # Accept T&Cs if needed
   if ! sudo xcodebuild -license check &>/dev/null; then
@@ -75,6 +83,25 @@ else
     sudo xcodebuild -license accept
   
     echo "Xcode license accepted."
+  fi
+  {{ end }}
+  
+  # Generate the mas Brewfile content dynamically and store it in a variable
+  brewfile_content=$(cat <<EOF
+  {{ range .packages.darwin.universal.mas -}}
+  {{ if ne .id $xcode_id -}}
+  mas {{ .name | quote }}, id: {{ .id }}
+  {{ end -}}
+  {{ end -}}
+  EOF
+  )
+  
+  # Step 1: Check if all packages are already installed using `brew bundle check`
+  echo "$brewfile_content" | brew bundle check --file=/dev/stdin
+  
+  # Step 2: If some packages are missing, install them
+  if [[ $? -ne 0 ]]; then
+      echo "$brewfile_content" | brew bundle --file=/dev/stdin
   fi
   
   {{ range .packages.asdf -}}
