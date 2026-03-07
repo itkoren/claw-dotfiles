@@ -19,6 +19,7 @@
 {{- if eq .chezmoi.os "darwin" }}
 [gpg "ssh"]
   program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+  allowedSignersFile = ~/.ssh/allowed_signers
 {{- end }}
 {{- end }}
 
@@ -114,3 +115,4 @@
 [url "git@github.com:satya-claw"]
   insteadOf = https://github.com/satya-claw
 {{- end }}
+
