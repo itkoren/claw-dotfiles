@@ -28,6 +28,11 @@ packages:
       - "docker"
       - "font-meslo-lg-nerd-font"
       - "obsidian"
+  mas:
+      - name: "Amphetamine"
+        id: "937984704"
+      - name: "Xcode"
+        id: "497799835"
   asdf:
       - plugin: "nodejs"
         versions:
