@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export DOTDIR="$HOME/.config"
+export ZDOTDIR="$DOTDIR/zsh"
+
+if [ ! -d "$ZDOTDIR" ]; then
+    mkdir -p "$ZDOTDIR"
+    touch "$ZDOTDIR/.zshrc"
+fi
