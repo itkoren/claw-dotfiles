@@ -5,54 +5,32 @@
 [user]
   name = "{{- .name -}}"
   email = "{{- .email -}}"
-  {{- if .key_sign }}
-  signingkey = {{ .key_sign }}
-  {{- else if .opsecret }}
   signingkey = {{ .opsecret }}
-  {{- end }}
 
-{{- if (or (.key_sign) (.opsecret)) }}
 [gpg]
   format = ssh
 
-{{- if .opsecret }}
-{{- if eq .chezmoi.os "darwin" }}
 [gpg "ssh"]
   program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
   allowedSignersFile = ~/.ssh/allowed_signers
-{{- end }}
-{{- end }}
 
-{{- if eq .chezmoi.os "darwin" }}
 [credential]
   helper = osxkeychain
-{{- else }}
-[credential]
-  helper = /usr/lib/git-core/git-credential-libsecret
-{{- end }}
-{{- end }}
 
 [core]
   editor = "{{ .editor }}"
   longpaths = true
   pager = "delta"
   excludesFile = ~/.gitignore_global
-  {{- if eq .chezmoi.os "windows" }}
-  autocrlf = true
-  sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
-  {{- else }}
   autocrlf = input
-  {{- end }}
-
+  
 [init]
   defaultBranch = "master"
   templatedir = ~/.gittemplates
 
 [commit]
-  {{- if (or (.key_sign) (.opsecret)) }}
   gpgsign = true
-  {{- end }} 
-
+  
 [push]
   default = upstream
   autoSetupRemote = true
