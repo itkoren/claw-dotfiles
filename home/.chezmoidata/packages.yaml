@@ -23,6 +23,7 @@ packages:
       - "peco"
       - "stern"
       - "pinentry-mac"
+      - "playwright-cli"
   casks:
       - "iterm2"
       - "docker"
