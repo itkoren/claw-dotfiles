@@ -1,0 +1,88 @@
+#
+# This file is managed by chezmoi. Always edit it with the command
+# chezmoi edit ~/.config/antigen/.antigenrc
+# chezmoi diff
+# chezmoi -v apply
+#
+
+# Awesome Zsh Plugins: https://github.com/unixorn/awesome-zsh-plugins
+# Antigen: https://github.com/zsh-users/antigen
+# Oh My Zsh: https://github.com/ohmyzsh/ohmyzsh
+
+MAGIC_ENTER_GIT_COMMAND='git status -u .'
+MAGIC_ENTER_OTHER_COMMAND='k -ah'
+
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+
+########## Antigen Plugins ##########
+
+antigen bundle <<EOBUNDLES
+    # Bundles from the default repo (robbyrussell's oh-my-zsh)
+    # Auto completion plugins
+    git
+    git-extras
+    brew
+    brew-cask
+    lein
+    osx
+    node
+    ssh-agent
+    web-search
+    asdf
+    ansible
+    sublime
+    kubectl
+
+    # Syntax highlighting bundle.
+    zsh-users/zsh-syntax-highlighting
+
+    # Fish-like auto suggestions
+    zsh-users/zsh-autosuggestions
+
+    # Extra zsh completions
+    zsh-users/zsh-completions
+
+    # Guess what to install when running an unknown command.
+    command-not-found
+
+    # Other general oh-my-zsh plugins
+    aliases
+    common-aliases
+    extract
+    colored-man-pages
+    docker
+    pip
+    golang
+
+    colorize
+    magic-enter
+    safe-paste
+    thefuck
+    dirhistory
+    encode64
+    zoxide
+    copyfile
+    copypath
+    dirhistory
+    macos
+
+    zsh-users/zsh-history-substring-search
+    leophys/zsh-plugin-fzf-finder
+
+    jeffreytse/zsh-vi-mode
+    kennethreitz/autoenv
+    b4b4r07/enhancd
+    supercrabtree/k
+    esc/conda-zsh-completion
+    MichaelAquilina/zsh-you-should-use
+
+EOBUNDLES
+
+#####################################
+
+# Load the theme.
+# antigen theme romkatv/powerlevel10k
+
+# Tell Antigen that you're done.
+antigen apply
