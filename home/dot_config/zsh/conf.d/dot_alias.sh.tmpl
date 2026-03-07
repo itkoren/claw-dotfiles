@@ -1,0 +1,49 @@
+#
+# This file is managed by chezmoi. Always edit it with the command
+# chezmoi edit ~/.config/zsh/conf.d/.alias
+# chezmoi diff
+# chezmoi -v apply
+#
+
+# MODERN APPLICATIONS
+eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale')
+
+# VARIABLES
+export PDT="~/Desktop"
+export PDL="~/Downloads"
+export PDM="~/Documents"
+
+# ALIASES
+#
+# SPELLING ALIASES
+alias sudp="sudo"
+alias gerp="grep"
+
+# SHORTCUT ALIASES
+alias hg="history | grep"
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+
+# NAVIGATION ALIASES
+alias ndt="cd $PDT"
+alias ndl="cd $PDL"
+alias ndm="cd $PDM"
+
+#alias ls='ls -h --color=auto'
+#alias l='ls -l'
+#alias la='ls -a'
+#alias ll='ls -la'
+alias ls='eza ${eza_params}'
+alias l='eza --git-ignore ${eza_params}'
+alias ll='eza --all --header --long ${eza_params}'
+alias llm='eza --all --header --long --sort=modified ${eza_params}'
+alias la='eza -lbhHigUmuSa'
+alias lx='eza -lbhHigUmuSa@'
+alias lt='eza --tree'
+alias tree='eza --tree'
+
+alias chint='zsh -c "source $ZDOTDIR/scripts/.darwin_update.zsh; check_internet"'
+alias upbrew='zsh -c "source $ZDOTDIR/scripts/.darwin_update.zsh; update_brew"'
+alias upapp='zsh -c "source $ZDOTDIR/scripts/.darwin_update.zsh; update_app_store"'
+alias upmac='zsh -c "source $ZDOTDIR/scripts/.darwin_update.zsh; update_macos"'
+alias upall='zsh -c "source $ZDOTDIR/scripts/.darwin_update.zsh; update_all"'
