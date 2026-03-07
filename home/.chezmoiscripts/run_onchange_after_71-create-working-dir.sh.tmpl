@@ -6,6 +6,7 @@ if [[ "$yn" =~ ^[Yy]$ ]]; then
 else
     # Check if the repos are already cloned
     if [ ! -d "$HOME/content/openclaw/workspace" ]; then
+        mkdir -p "$HOME/content/openclaw"
         git clone git@github.com:satya-claw/workspace.git "$HOME/content/openclaw/workspace"
     fi
 fi
