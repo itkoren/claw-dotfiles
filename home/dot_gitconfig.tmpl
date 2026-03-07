@@ -5,7 +5,7 @@
 [user]
   name = "{{- .name -}}"
   email = "{{- .email -}}"
-  signingkey = {{ .opsecret }}
+  signingkey = {{- .opsecret -}}
 
 [gpg]
   format = ssh
