@@ -28,6 +28,7 @@ packages:
       - "docker"
       - "font-meslo-lg-nerd-font"
       - "obsidian"
+      - "tailscale-app"
   mas:
       - name: "Amphetamine"
         id: "937984704"
