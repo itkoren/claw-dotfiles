@@ -2,35 +2,134 @@
 # │ CHEZMOI IGNORE CONFIG                                    │
 # ╰──────────────────────────────────────────────────────────╯
 
-{{ template "ignore_global.tmpl" . }}
+rules/
+.github/
+Dockerfile
+LICENSE.md
+README.md
+TODO.org
+archlinux.yml
+docker-compose.yml
+docker-entrypoint.sh
+inventory
+osx.yml
+requirements.yml
+COMMANDS.org
+ansible.cfg
+CHANGELOG.md
+install.sh
+install.ps1
+.weechat/logs
+.weechat/weechat.log
+.weechat/python/__pycache__/
+config/pgcli/history
+scripts/
+Brewfile
+Pacfile
+Aurfile
+Brewfile.lock.json
+Makefile
+projectile
+resources
+notes.org
+.oh-my-zsh/cache/**
+.oh-my-zsh/custom/themes/powerlevel10k/**/*.zwc
+.oh-my-zsh/.git/
+.oh-my-zsh/plugins/
+.oh-my-zsh/custom/
+.oh-my-zsh/themes
+.nvm/.cache
+.nvm/alias
+.nvm/versions
+.pyenv/cache
+.pyenv/shims
+.pyenv/versions
+*.DS_Store
+
+# hugo
+docs/
+.content/
+static
+config.toml
+themesignore_global.tmpl
 
 # Linux only
-{{- if ne .chezmoi.os "linux" }}
-{{ template "ignore_linux.tmpl" }}
-{{- end }}
-
-# OSX only
-{{- if ne .chezmoi.os "darwin" }}
-{{ template "ignore_darwin.tmpl" }}
-{{- end }}
-
-# Windows only
-{{- if ne .chezmoi.os "windows" }}
-{{ template "ignore_windows.tmpl" }}
-{{- end }}
-
-# Unix only
-{{- if eq .chezmoi.os "windows" }}
-{{ template "ignore_unix.tmpl" }}
-{{- end }}
-
-# Ignore on WSL
-{{- if .is_wsl }}
+.config/nixpkgs
+.config/dunst
+.config/rofi
+.config/i3
+.config/polybar
+.config/i3-autodisplay
+.config/greenclip.cfg
+.config/systemd
+.config/autorandr
+.config/conky
+.config/dunst
+.config/gtk-3.0
+.config/i3
+.config/i3-autodisplay
+.config/polybar
+.config/qtile
+.config/rofi
+.config/chrome-flags.conf
+.config/libinput-gestures.conf
+.config/mimeapps.list
+.config/picom.conf
 .config/vesktop
 .config/wezterm
-{{- end }}
+
+.gtkrc-2.0
+.inputrc
+.xbindkeysrc
+.xinitrc
+.xsession
+.Xmodmap
+.Xresources
+.xinitrc
+.xsession
+.config/picom.conf
+.config/systemd/user/mbsync.service
+.config/systemd/user/mbsync.timer
+.config/systemd/user/r2e.service
+.config/systemd/user/r2e.timer
+.config/systemd/user/syncmail.service
+.config/systemd/user/syncmail.timer
+.config/autorandr
+.config/conky
+
+.bin/executable_battery_notifier.sh
+.bin/executable_copy-local-pkgs.sh
+.bin/executable_copy-detect-screen
+.bin/executable_dwmbar
+.bin/executable_launch_polybar.sh
+.bin/executable_lightsOn.sh
+.bin/executable_lock.sh
+.bin/executable_open-terminal.sh
+.bin/executable_rofi-notmuch.sh
+.bin/executable_run-dmenu.sh
+.bin/executable_spotfy.sh
+.bin/executable_startdwm.sh
+.bin/executable_volume-stats.sh
+
+# Windows only
+.chezmoiscripts/windows/**
+
+AppData
+Documents
+
+.wslconfig
+
+# Unix only
+.chezmoiscripts/unix/**
+
+# Ignore on WSL
+.config/vesktop
+.config/wezterm
 
 # Ignore on Work Environment
-{{- if eq .hosttype "work" }}
-{{ template "ignore_work.tmpl" }}
-{{- end }}
+.ssh
+.mailrc
+
+.config/systemd/user/r2e.service
+.config/systemd/user/r2e.timer
+.config/rss2email.cfg
