@@ -22,8 +22,10 @@ packages:
       - "asdf"
       - "peco"
       - "stern"
+      - "tmux"
       - "pinentry-mac"
       - "playwright-cli"
+      - "googleworkspace-cli"
   casks:
       - "iterm2"
       - "docker"
