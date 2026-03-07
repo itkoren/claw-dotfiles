@@ -1,0 +1,36 @@
+# ╭──────────────────────────────────────────────────────────╮
+# │ CHEZMOI IGNORE CONFIG                                    │
+# ╰──────────────────────────────────────────────────────────╯
+
+{{ template "ignore_global.tmpl" . }}
+
+# Linux only
+{{- if ne .chezmoi.os "linux" }}
+{{ template "ignore_linux.tmpl" }}
+{{- end }}
+
+# OSX only
+{{- if ne .chezmoi.os "darwin" }}
+{{ template "ignore_darwin.tmpl" }}
+{{- end }}
+
+# Windows only
+{{- if ne .chezmoi.os "windows" }}
+{{ template "ignore_windows.tmpl" }}
+{{- end }}
+
+# Unix only
+{{- if eq .chezmoi.os "windows" }}
+{{ template "ignore_unix.tmpl" }}
+{{- end }}
+
+# Ignore on WSL
+{{- if .is_wsl }}
+.config/vesktop
+.config/wezterm
+{{- end }}
+
+# Ignore on Work Environment
+{{- if eq .hosttype "work" }}
+{{ template "ignore_work.tmpl" }}
+{{- end }}
