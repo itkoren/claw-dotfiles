@@ -30,7 +30,7 @@ packages:
       - "iterm2"
       - "font-meslo-lg-nerd-font"
       - "obsidian"
-      - "tailscale"
+      - "tailscale-app"
   mas:
       - name: "Amphetamine"
         id: "937984704"
