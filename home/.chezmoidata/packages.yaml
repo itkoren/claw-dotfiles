@@ -29,6 +29,8 @@ packages:
   casks:
       - "iterm2"
       - "docker"
+      - "utm"
+      - "lulu"
       - "font-meslo-lg-nerd-font"
       - "obsidian"
       - "tailscale-app"
