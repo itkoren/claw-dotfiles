@@ -198,7 +198,7 @@ function run_chezmoi() {
     # to match the target state.
     echo "Command being executed: ${chezmoi_cmd} init -v ${DOTFILES_USER_OR_REPO_URL} --force --branch ${BRANCH_NAME} --use-builtin-git true ${no_tty_option}"
     if [ "${DOTFILES_DEBUG:-}" ]; then
-        if ! "sudo ${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
+        if ! "${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
                 --force \
                 --branch "${BRANCH_NAME}" \
                 --use-builtin-git true \
@@ -209,7 +209,7 @@ function run_chezmoi() {
           exit 1  # Exit the script with a failure status
         fi
     else
-        if ! "sudo ${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
+        if ! "${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
             --force \
             --branch "${BRANCH_NAME}" \
             --use-builtin-git true \
