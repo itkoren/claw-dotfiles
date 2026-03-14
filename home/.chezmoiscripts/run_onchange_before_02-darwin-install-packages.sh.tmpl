@@ -26,15 +26,17 @@ echo "brew {{ . }}" >> "$tmp_brewfile"
 brew bundle --file="$tmp_brewfile"
 rm "$tmp_brewfile"
 
+{{ if gt (len .packages.mas) 0 }}
 
 # -------------------------
-# Ensure mas exists
+# Ensure mas exists (only if MAS packages are defined)
 # -------------------------
 if ! command -v mas >/dev/null 2>&1; then
   echo "Installing mas..."
   brew install mas
 fi
 
+{{ end }}
 
 # -------------------------
 # Install or update casks
@@ -64,23 +66,33 @@ else
   echo "No missing or outdated casks."
 fi
 
-
 # -------------------------
 # Install Xcode separately
 # -------------------------
 {{ $xcode_id := "497799835" }}
+{{ if gt (len .packages.mas) 0 }}
+{{ $exclude_universal_package := "" }}
+{{ range .packages.mas }}
+  {{ if eq .id $xcode_id }}
+    {{ $exclude_universal_package = . }}
+  {{ end }}
+{{ end }}
+{{ if $exclude_universal_package }}
+# Install the Xcode specific app (id: 497799835) separately if needed
+mas install {{ $exclude_universal_package.id }}
 
-echo "Installing Xcode (id: {{ $xcode_id }})..."
-mas install {{ $xcode_id }} || true
+# Accept T&Cs if needed
+if ! sudo xcodebuild -license check &>/dev/null; then
+  echo "Xcode license has not been accepted."
+  echo "Accepting the Xcode license..."
 
-# Accept Xcode license if needed
-if command -v xcodebuild >/dev/null 2>&1; then
-  if ! sudo xcodebuild -license check &>/dev/null; then
-    echo "Accepting Xcode license..."
-    sudo xcodebuild -license accept
-  fi
+  # Automatically accept the license
+  sudo xcodebuild -license accept
+
+  echo "Xcode license accepted."
 fi
-
+{{ end }}
+{{ end }}
 
 # -------------------------
 # Install other MAS apps
@@ -91,7 +103,6 @@ echo "Installing {{ .name }} (id: {{ .id }}) via MAS..."
 mas install {{ .id }} || true
 {{ end }}
 {{ end }}
-
 
 # -------------------------
 # Install ASDF plugins
