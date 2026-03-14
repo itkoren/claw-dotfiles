@@ -88,20 +88,7 @@ function get_os_type() {
     uname
 }
 
-function keepalive_sudo_linux() {
-    # Might as well ask for password up-front, right?
-    echo "Checking for \`sudo\` access which may request your password."
-    sudo -v || { echo "sudo failed!"; exit 1; }
-
-    # Keep-alive: update existing sudo time stamp if set, otherwise do nothing.
-    while true; do
-        sudo -n true
-        sleep 60
-        kill -0 "$$" || exit
-    done 2>/dev/null &
-}
-
-function keepalive_sudo_macos() {
+function keepalive_sudo() {
     # ref. https://github.com/reitermarkus/dotfiles/blob/master/.sh#L85-L116
     (
         builtin read -r -s -p "Password: " </dev/tty
@@ -131,96 +118,10 @@ function keepalive_sudo_macos() {
     fi
 }
 
-function keepalive_sudo() {
-
-    local ostype
-    ostype="$(get_os_type)"
-
-    if [ "${ostype}" == "Darwin" ]; then
-        keepalive_sudo_macos
-    elif [ "${ostype}" == "Linux" ]; then
-        keepalive_sudo_linux
-    else
-        echo "Invalid OS type: ${ostype}" >&2
-        exit 1
-    fi
-}
-function verify_dictation_shortcut() {
-    echo "***************************************************************************"
-    echo "***************************************************************************"
-    echo "***************************************************************************"
-    echo "**** Dictation Settings will be opened when you press the Enter button ****"
-    echo "**** Please verify the Shortcut option is set to \"Press fn Twice\"    ****"
-    echo "**** Press Enter button again once complete                            ****"
-    echo "***************************************************************************"
-    echo "***************************************************************************"
-    echo "***************************************************************************"
-    read
-    open "x-apple.systempreferences:com.apple.preference.keyboard?Dictation"
-    read -p "Press any key to continue." -n 1 -r
-    echo
-}
-function initialize_os_macos() {
+function initialize_os_env() {
     function is_homebrew_exists() {
         command -v brew &>/dev/null
     }
-
-    # Install the Xcode Command Line Tools.
-    if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; then
-        echo "===> Installing Xcode Command Line Tools"
-
-        # Install Xcode Command Line Tools if not already installed
-        if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; then
-            echo "Installing Xcode Command Line Tools..."
-            # Only run if the tools are not installed yet
-            # To check that try to print the SDK path
-            xcode-select -p &> /dev/null
-            if [ $? -ne 0 ]; then
-              echo "Xcode CLI tools not found. Installing them..."
-              touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
-              PROD=$(softwareupdate -l |
-                grep "\*.*Command Line" |
-                head -n 1 | awk -F"*" '{print $2}' |
-                sed -e 's/^ *//' |
-                tr -d '\n')
-              softwareupdate -i "$PROD" -v;
-            else
-              echo "Xcode CLI tools OK"
-            fi
-        fi
-    fi
-
-    # Accept T&Cs if needed
-    # Check if full Xcode is installed
-    if [ -d "/Applications/Xcode.app" ]; then
-        # Set the active developer directory to Xcode if not already set
-        if ! xcode-select -p | grep -q '/Applications/Xcode.app'; then
-            echo "Setting active developer directory to Xcode..."
-            sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-        fi
-
-        # Accept the Xcode license if not already accepted
-        if sudo xcodebuild -license check &>/dev/null; then
-            echo "Xcode license already accepted."
-        else
-            echo "Xcode license has not been accepted."
-            echo "Accepting the Xcode license..."
-            sudo xcodebuild -license accept
-            echo "Xcode license accepted."
-        fi
-    else
-        # If only Command Line Tools are installed, handle accepting the license
-        if [ -d "/Library/Developer/CommandLineTools" ]; then
-            # Set the active developer directory to Command Line Tools if not already set
-            if ! xcode-select -p | grep -q '/Library/Developer/CommandLineTools'; then
-                echo "Setting active developer directory to Command Line Tools..."
-                sudo xcode-select --switch /Library/Developer/CommandLineTools
-            fi
-        fi
-    fi
-
-    # Verify dictation shortcut 
-    verify_dictation_shortcut
 
     # Instal Homebrew if needed.
     if ! is_homebrew_exists; then
@@ -237,29 +138,6 @@ function initialize_os_macos() {
         eval "$(/usr/local/bin/brew shellenv)"
     else
         echo "Invalid CPU arch: $(arch)" >&2
-        exit 1
-    fi
-}
-
-function initialize_os_linux() {
-    if which nix; then
-        echo 'Nix is already installed'
-    else
-        # sh <(curl -L https://nixos.org/nix/install) --daemon
-        sh <(curl -L https://nixos.org/nix/install) --no-daemon
-    fi
-}
-
-function initialize_os_env() {
-    local ostype
-    ostype="$(get_os_type)"
-
-    if [ "${ostype}" == "Darwin" ]; then
-        initialize_os_macos
-    elif [ "${ostype}" == "Linux" ]; then
-        initialize_os_linux
-    else
-        echo "Invalid OS type: ${ostype}" >&2
         exit 1
     fi
 }
@@ -318,10 +196,6 @@ function run_chezmoi() {
             brew install chezmoi
             chezmoi_cmd=$(which chezmoi)
             echo "chezmoi installed via brew, path: $chezmoi_cmd"
-        elif [ "${ostype}" == "Linux" ]; then
-            nix-env -i chezmoi
-            chezmoi_cmd=$(which chezmoi)
-            echo "chezmoi installed via nix, path: $chezmoi_cmd"
         else
             echo "Invalid OS type: ${ostype}" >&2
             exit 1
