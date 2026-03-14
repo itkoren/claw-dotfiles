@@ -23,6 +23,7 @@ packages:
       - "peco"
       - "stern"
       - "tmux"
+      - "lume"
       - "pinentry-mac"
       - "playwright-cli"
       - "googleworkspace-cli"
