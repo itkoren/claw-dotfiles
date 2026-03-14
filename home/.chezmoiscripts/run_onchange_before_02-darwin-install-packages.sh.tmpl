@@ -65,7 +65,7 @@ else
 
   {{ $xcode_id := "497799835" -}}
   {{ $exclude_universal_package := "" }}
-  {{ range .packages.darwin.universal.mas }}
+  {{ range .packages.mas }}
     {{ if eq .id $xcode_id }}
       {{ $exclude_universal_package = . }}
     {{ end }}
@@ -88,7 +88,7 @@ else
   
   # Generate the mas Brewfile content dynamically and store it in a variable
   brewfile_content=$(cat <<EOF
-  {{ range .packages.darwin.universal.mas -}}
+  {{ range .packages.mas -}}
   {{ if ne .id $xcode_id -}}
   mas {{ .name | quote }}, id: {{ .id }}
   {{ end -}}
