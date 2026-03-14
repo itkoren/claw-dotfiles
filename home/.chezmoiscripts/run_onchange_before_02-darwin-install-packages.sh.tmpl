@@ -6,57 +6,55 @@ read -p "Going to install packages! skip? (y/n): " yn
 if [[ "$yn" =~ ^[Yy]$ ]]; then
   echo "Skipping..."
 else
-  # First check missing and outdated casks
-  brewfile_cask_content=$(cat <<EOF
-  {{ range .packages.casks -}}
-  cask {{ . | quote }}
-  {{ end -}}
-  EOF
-  )
-  
-  # Generate the tap & formulas Brewfile content dynamically and store it in a variable
-  brewfile_content=$(cat <<EOF
+  echo "Installing taps & brews..."
+
+  # --- Generate Brewfile for taps & brews ---
+  tmp_brewfile=$(mktemp)
+
+  # Taps
   {{ range .packages.taps -}}
-  tap {{ . | quote }}
+  echo "tap {{ . }}" >> "$tmp_brewfile"
   {{ end -}}
-  
+
+  # Brews
   {{ range .packages.brews -}}
-  brew {{ . | quote }}
+  echo "brew {{ . }}" >> "$tmp_brewfile"
   {{ end -}}
-  EOF
-  )
-  
-  # Step 1: Check if all packages are already installed using `brew bundle check`
-  echo "$brewfile_content" | brew bundle check --file=/dev/stdin
-  
-  # Step 2: If some packages are missing, install them
-  if [[ $? -ne 0 ]]; then
-      echo "$brewfile_content" | brew bundle --file=/dev/stdin
+
+  # Install taps & brews
+  brew bundle --file="$tmp_brewfile"
+  rm "$tmp_brewfile"
+
+  # Ensure mas exists before using it
+  if ! command -v mas >/dev/null 2>&1; then
+    echo "Installing mas..."
+    brew install mas
   fi
-  
+
+  # --- Install casks ---
   casks_to_install_or_update=""
   for cask in {{ range .packages.casks -}}{{ . }} {{ end -}}; do
     if ! brew list --cask "$cask" &>/dev/null || brew outdated --cask "$cask" | grep -q .; then
       casks_to_install_or_update+="$cask"$'\n'
     fi
   done
-  
+
   if [[ -n "$casks_to_install_or_update" ]]; then
     echo "Casks to install or update:"
     echo "$casks_to_install_or_update"
-  
-    # Feed properly to brew bundle by generating a temporary Brewfile
+
     tmp_brewfile=$(mktemp)
     while IFS= read -r c; do
       echo "cask \"$c\"" >> "$tmp_brewfile"
     done <<< "$casks_to_install_or_update"
-  
+
     brew bundle --file="$tmp_brewfile" --force
     rm "$tmp_brewfile"
   else
     echo "No missing or outdated casks to install."
   fi
 
+  # --- Install Xcode separately ---
   {{ $xcode_id := "497799835" -}}
   {{ $exclude_universal_package := "" }}
   {{ range .packages.mas }}
@@ -64,45 +62,40 @@ else
       {{ $exclude_universal_package = . }}
     {{ end }}
   {{ end }}
-  {{ if $exclude_universal_package }}
-  # Install the Xcode specific app (id: 497799835) separately if needed
-  mas install {{ $exclude_universal_package.id }}
-  
-  # Accept T&Cs if needed
-  if ! sudo xcodebuild -license check &>/dev/null; then
-    echo "Xcode license has not been accepted."
-    echo "Accepting the Xcode license..."
-  
-    # Automatically accept the license
-    sudo xcodebuild -license accept
-  
-    echo "Xcode license accepted."
+
+  if {{ if $exclude_universal_package }}true{{ else }}false{{ end }}; then
+    echo "Installing Xcode (id: {{ $xcode_id }})..."
+    mas install {{ $exclude_universal_package.id }}
+
+    # Accept Xcode license if needed
+    if ! sudo xcodebuild -license check &>/dev/null; then
+      echo "Accepting Xcode license..."
+      sudo xcodebuild -license accept
+      echo "Xcode license accepted."
+    fi
   fi
+
+  # --- Install other MAS apps ---
+  for app in {{ range .packages.mas -}}
+    {{ if ne .id $xcode_id -}}
+    echo "Installing {{ .name }} (id: {{ .id }}) via MAS..."
+    mas install {{ .id }}
+    {{ end -}}
   {{ end }}
-  
-  # Generate the mas Brewfile content dynamically and store it in a variable
-  brewfile_content=$(cat <<EOF
-  {{ range .packages.mas -}}
-  {{ if ne .id $xcode_id -}}
-  mas {{ .name | quote }}, id: {{ .id }}
-  {{ end -}}
-  {{ end -}}
-  EOF
-  )
-  
-  # Step 1: Check if all packages are already installed using `brew bundle check`
-  echo "$brewfile_content" | brew bundle check --file=/dev/stdin
-  
-  # Step 2: If some packages are missing, install them
-  if [[ $? -ne 0 ]]; then
-      echo "$brewfile_content" | brew bundle --file=/dev/stdin
-  fi
-  
+
+  # --- Install ASDF plugins ---
   {{ range .packages.asdf -}}
-  asdf plugin add {{ .plugin }}
-  {{ $plugin := .plugin }}  # Store the plugin name in a local variable
+  plugin="{{ .plugin }}"
+  # Add plugin if not already added
+  if ! asdf plugin list | grep -q "^$plugin$"; then
+    echo "Adding ASDF plugin $plugin..."
+    asdf plugin add "$plugin"
+  fi
+
+  # Install requested versions
   {{ range .versions }}
-  asdf install {{ $plugin }} {{ . }}  # Use the $plugin variable
+  echo "Installing $plugin version {{ . }}..."
+  asdf install "$plugin" "{{ . }}"
   {{ end }}
   {{ end -}}
 fi
