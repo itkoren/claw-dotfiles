@@ -172,26 +172,21 @@ function initialize_os_macos() {
         # Install Xcode Command Line Tools if not already installed
         if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; then
             echo "Installing Xcode Command Line Tools..."
-            xcode-select --install
-    
-            # Wait for user to complete installation
-            echo "******************************************************************************************"
-            echo "******************************************************************************************"
-            echo "******************************************************************************************"
-            echo "**** Xcode Command Line Tools installation will start when you press the Enter button ****"
-            echo "**** Please complete the Xcode Command Line Tools installation...                     ****"
-            echo "**** Press Enter button again once the installation is complete.                      ****"
-            echo "******************************************************************************************"
-            echo "******************************************************************************************"
-            echo "******************************************************************************************"
-            read -p "Press any key to continue." -n 1 -r
-            echo
-    
-            # Verify installation
-            until [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; do
-                echo "Waiting for Command Line Tools to be installed..."
-                sleep 5
-            done
+            # Only run if the tools are not installed yet
+            # To check that try to print the SDK path
+            xcode-select -p &> /dev/null
+            if [ $? -ne 0 ]; then
+              echo "Xcode CLI tools not found. Installing them..."
+              touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
+              PROD=$(softwareupdate -l |
+                grep "\*.*Command Line" |
+                head -n 1 | awk -F"*" '{print $2}' |
+                sed -e 's/^ *//' |
+                tr -d '\n')
+              softwareupdate -i "$PROD" -v;
+            else
+              echo "Xcode CLI tools OK"
+            fi
         fi
     fi
 
