@@ -34,33 +34,27 @@ else
       echo "$brewfile_content" | brew bundle --file=/dev/stdin
   fi
   
-  # If there are missing or outdated casks, generate a Brewfile for only those casks
-  if [[ -n "$brewfile_cask_content" ]]; then
+  casks_to_install_or_update=""
+  for cask in {{ range .packages.casks -}}{{ . }} {{ end -}}; do
+    if ! brew list --cask "$cask" &>/dev/null || brew outdated --cask "$cask" | grep -q .; then
+      casks_to_install_or_update+="$cask"$'\n'
+    fi
+  done
   
-      # Iterate over each cask in the list
-      while IFS= read -r cask; do
-        # Remove the "cask" prefix and the quotes to get the cask name
-        cask_name=$(echo "$cask" | sed -E 's/cask "(.*)"/\1/')
-        
-        # Check if the cask is installed and outdated
-        if ! brew list --cask "$cask_name" &>/dev/null || brew outdated --cask "$cask_name" | grep -q .; then
-          # If it's not installed or outdated, add it to the list of casks to install/update
-          casks_to_install_or_update+="$cask\n"
-        fi
-      done <<< "$brewfile_cask_content"
-      
-      # Now $casks_to_install_or_update contains all casks that need installation or updating
-      echo "Casks to install or update: $casks_to_install_or_update"
+  if [[ -n "$casks_to_install_or_update" ]]; then
+    echo "Casks to install or update:"
+    echo "$casks_to_install_or_update"
   
-      # Step 1: Check if the casks are already installed using `brew bundle check`
-      echo "$casks_to_install_or_update" | brew bundle check --file=/dev/stdin
+    # Feed properly to brew bundle by generating a temporary Brewfile
+    tmp_brewfile=$(mktemp)
+    while IFS= read -r c; do
+      echo "cask \"$c\"" >> "$tmp_brewfile"
+    done <<< "$casks_to_install_or_update"
   
-      # Step 2: If some casks are missing or outdated, install them
-      if [[ $? -ne 0 ]]; then
-          echo "$casks_to_install_or_update" | brew bundle --force --file=/dev/stdin
-      fi
+    brew bundle --file="$tmp_brewfile" --force
+    rm "$tmp_brewfile"
   else
-      echo "No missing or outdated casks to install."
+    echo "No missing or outdated casks to install."
   fi
 
   {{ $xcode_id := "497799835" -}}
