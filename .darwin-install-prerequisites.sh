@@ -51,6 +51,7 @@ function install_prerequisite() {
 
 case "$(uname -s)" in
 Darwin)
+    install_prerequisite "git" 1 ""
     install_prerequisite "1password/tap" 1 ""
     install_prerequisite "1password-cli" "" ""
     install_prerequisite "git-delta" "" ""
