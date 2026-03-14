@@ -198,7 +198,7 @@ function run_chezmoi() {
     # to match the target state.
     echo "Command being executed: ${chezmoi_cmd} init -v ${DOTFILES_USER_OR_REPO_URL} --force --branch ${BRANCH_NAME} --use-builtin-git true ${no_tty_option}"
     if [ "${DOTFILES_DEBUG:-}" ]; then
-        if ! "${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
+        if ! "sudo ${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
                 --force \
                 --branch "${BRANCH_NAME}" \
                 --use-builtin-git true \
@@ -209,7 +209,7 @@ function run_chezmoi() {
           exit 1  # Exit the script with a failure status
         fi
     else
-        if ! "${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
+        if ! "sudo ${chezmoi_cmd}" init -v "${DOTFILES_USER_OR_REPO_URL}" \
             --force \
             --branch "${BRANCH_NAME}" \
             --use-builtin-git true \
@@ -217,13 +217,6 @@ function run_chezmoi() {
           reset_chezmoi_state
           exit 1  # Exit the script with a failure status
         fi
-    fi
-
-    # the `age` command requires a tty, but there is no tty in the github actions.
-    # Therefore, it is currnetly difficult to decrypt the files encrypted with `age` in this workflow.
-    # I decided to temporarily remove the encrypted target files from chezmoi's control.
-    if is_ci_or_not_tty; then
-        find "$(${chezmoi_cmd} source-path)" -type f -name "encrypted_*" -exec rm -fv {} +
     fi
 
     # Add to PATH for installing the necessary binary files under `$HOME/.local/bin`.
