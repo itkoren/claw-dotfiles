@@ -249,36 +249,6 @@ function get_system_from_chezmoi() {
     echo "${system}"
 }
 
-function restart_shell_system() {
-    local system
-    system=$(get_system_from_chezmoi)
-
-    # exec shell as login shell (to reload the .zprofile or .profile)
-    if [ "${system}" == "client" ]; then
-        /bin/zsh --login
-
-    elif [ "${system}" == "server" ]; then
-        /bin/bash --login
-
-    else
-        echo "Invalid system: ${system}; expected \`client\` or \`server\`" >&2
-        exit 1
-    fi
-}
-
-function restart_shell() {
-
-    # Restart shell if specified "bash -c $(curl -L {URL})"
-    # not restart:
-    #   curl -L {URL} | bash
-    if [ -p /dev/stdin ]; then
-        echo "Now continue with Rebooting your shell"
-    else
-        echo "Restarting your shell..."
-        restart_shell_system
-    fi
-}
-
 function main() {
 
     echo ""
@@ -316,8 +286,8 @@ function main() {
     initialize_os_env
     echo "Setting up dotfiles..."
     initialize_dotfiles
-
-    # restart_shell # Disabled because the at_exit function does not work properly.
+    echo "Restarting shell..."
+    exec $SHELL
 }
 
 main
