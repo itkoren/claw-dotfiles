@@ -1,12 +1,6 @@
-{{ $opsakey := "" }}
-{{ $name := "" }}
-{{ $email := "" }}
-{{ $opsignkey := "" }}
-
-{{ $opsakey = promptStringOnce . "opsakey" "1Password Service Account Key" }}
-{{ $name = promptStringOnce . "name" "Name" "Satya Claw" }}
-{{ $email = promptStringOnce . "email" "Email Address" "ikoc.satya@gmail.com" }}
-{{ $opsignkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF4UYqiskGP7cVR7itP1HD31BIB/MUm3hdqH+fh13tX2" }}
+{{ $name := promptStringOnce . "name" "Name" "Satya Claw" }}
+{{ $email := promptStringOnce . "email" "Email Address" "ikoc.satya@gmail.com" }}
+{{ $opsignkey := "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF4UYqiskGP7cVR7itP1HD31BIB/MUm3hdqH+fh13tX2" }}
 
 # ╭──────────────────────────────────────────────────────────╮
 # │ CHEZMOI CONFIG                                           │
