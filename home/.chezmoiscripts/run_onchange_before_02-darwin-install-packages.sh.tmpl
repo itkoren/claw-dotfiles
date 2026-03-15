@@ -13,14 +13,16 @@ echo "Installing Homebrew taps and brews..."
 # -------------------------
 # Install taps and brews
 # -------------------------
+echo "Installing Homebrew taps and brews..."
+
 tmp_brewfile=$(mktemp)
 
 {{ range .packages.taps -}}
-echo "tap {{ . }}" >> "$tmp_brewfile"
+echo "tap \"{{ . }}\"" >> "$tmp_brewfile"
 {{ end }}
 
 {{ range .packages.brews -}}
-echo "brew {{ . }}" >> "$tmp_brewfile"
+echo "brew \"{{ . }}\"" >> "$tmp_brewfile"
 {{ end }}
 
 brew bundle --file="$tmp_brewfile"
