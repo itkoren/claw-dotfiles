@@ -4,7 +4,7 @@
 ## 🗿 Overview
 
 This [claw-dotfiles](https://github.com/itkoren/claw-dotfiles) repository is managed with [`chezmoi🏠`](https://www.chezmoi.io/), a great dotfiles manager.
-The setup scripts are aimed for [MacOS](https://www.apple.com/jp/macos), [Ubuntu Desktop](https://ubuntu.com/desktop), and [Ubuntu Server](https://ubuntu.com/server). The first two (MacOS/Ubuntu Desktop) include settings for `client` machines and the latter one (Ubuntu Server) for `server` machines. 
+The setup scripts are aimed for [MacOS](https://www.apple.com/jp/macos). It include settings for OpenClaw installation `client` machines. 
 
 The actual dotfiles exist under the [`home`](https://github.com/itkoren/claw-dotfiles/tree/master/home) directory specified in the [`.chezmoiroot`](https://github.com/itkoren/claw-dotfiles/blob/master/.chezmoiroot).
 See [.chezmoiroot - chezmoi](https://www.chezmoi.io/reference/special-files-and-directories/chezmoiroot/) more detail on the setting.
@@ -19,13 +19,6 @@ To set up the dotfiles run the appropriate snippet in the terminal.
 
 ```console
 bash -c "$(curl -fsLS https://raw.githubusercontent.com/itkoren/claw-dotfiles/main/setup.sh)"
-```
-
-### 🖥️ `Ubuntu`
-- Configuration snippet of the Ubuntu environment for both client and server machine:
-
-```console
-bash -c "$(wget -qO - https://raw.githubusercontent.com/itkoren/claw-dotfiles/main/setup.sh)"
 ```
 
 ### Minimal setup
