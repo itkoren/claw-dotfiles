@@ -31,7 +31,6 @@ packages:
       - "iterm2"
       - "font-meslo-lg-nerd-font"
       - "obsidian"
-      - "tailscale"
   mas: []
   asdf:
       - plugin: "nodejs"
