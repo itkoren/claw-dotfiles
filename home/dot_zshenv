@@ -1,8 +1,12 @@
 #!/bin/bash
 
+export DOTENV="$HOME/.env"
 export DOTDIR="$HOME/.config"
 export ZDOTDIR="$DOTDIR/zsh"
 
+if [ -f "$DOTENV" ]; then
+    source "$DOTENV"
+fi
 if [ ! -d "$ZDOTDIR" ]; then
     mkdir -p "$ZDOTDIR"
     touch "$ZDOTDIR/.zshrc"
