@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export DOTENV="$HOME/.env"
 export DOTDIR="$HOME/.config"
 export ZDOTDIR="$DOTDIR/zsh"
+export DOTENV="$DOTDIR/op/env.sh"
 
 if [ -f "$DOTENV" ]; then
     source "$DOTENV"
