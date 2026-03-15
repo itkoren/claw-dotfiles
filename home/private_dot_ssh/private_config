@@ -1,4 +1,0 @@
-Host *
-  IdentityAgent ~/.config/op/agent.sock
-  AddKeysToAgent yes
-  IdentitiesOnly yes
