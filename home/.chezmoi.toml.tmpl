@@ -1,3 +1,4 @@
+{{ $opsakey := promptStringOnce . "opsakey" "1Password Service Account Key" }}
 {{ $name := promptStringOnce . "name" "Name" "Satya Claw" }}
 {{ $email := promptStringOnce . "email" "Email Address" "ikoc.satya@gmail.com" }}
 {{ $opsignkey := "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF4UYqiskGP7cVR7itP1HD31BIB/MUm3hdqH+fh13tX2" }}
@@ -11,6 +12,7 @@ sourceDir = {{ .chezmoi.workingTree | quote }}
 progress = true
 
 [data]
+  opsakey = {{ $opsakey | quote }}
   name = {{ $name | quote }}
   email = {{ $email | quote }}
   editor = "nvim"
