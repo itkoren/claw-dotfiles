@@ -1,0 +1,9 @@
+#!{{ lookPath "sh" }}
+set -eu
+
+KEY="$HOME/.ssh/id_ed25519"
+
+if [ ! -f "$KEY" ]; then
+  echo "Generating SSH key..."
+  ssh-keygen -t ed25519 -C {{ .data.email | quote }} -f "$KEY" -N ""
+fi
