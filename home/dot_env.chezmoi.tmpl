@@ -1,4 +1,0 @@
-export OP_SERVICE_ACCOUNT_TOKEN=$(chezmoi execute-template <<'EOF'
-{{ promptStringOnce . "opsakey" "1Password Service Account Key" }}
-EOF
-)
