@@ -39,6 +39,7 @@ progress = true
   exclude = ["always"]
 
 [scriptEnv]
+  OP_SERVICE_ACCOUNT_TOKEN = {{ $opsakey | quote }}
   DEFAULTS = "0"
   TRACE = "0"
   VERBOSE = "0"
